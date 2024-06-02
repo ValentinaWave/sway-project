@@ -39,7 +39,8 @@
 
 Откроем свой проект в редакторе кода ./counter-contract/src/main.sw, удалим все в src/main.sw и создадим новый код:
 
-    ```contract;
+```ruby
+contract;
  
 storage {
     counter: u64 = 0,
@@ -65,6 +66,8 @@ impl Counter for Contract {
         storage.counter.write(incremented);
     }
 }
+```
+
 
 Перейдем в папку нашего контракта и выполним команду, чтобы создать контракт:
 
