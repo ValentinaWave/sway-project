@@ -1,14 +1,14 @@
-#  Counter Dapp
+####  Смарт-контракт в Sway & Counter Dapp
 
 Это руководство содержит пошаговые инструкции о том, как
-- написать смарт-контракт в Sway
-- написать тест в Rust
-- развернуть в тестовой сети Fuel
-- создать интерфейс
-- интегрировать кошелек
+- написать смарт-контракт в Sway;
+- написать тест в Rust;
+- развернуть в тестовой сети Fuel;
+- создать интерфейс;
+- интегрировать кошелек.
   ***
 
-### Смарт-контракт в Sway
+# Смарт-контракт в Sway
 
 Установка
 ========================
@@ -16,13 +16,13 @@
 Чтобы установить набор инструментов Fuel, вы можете использовать скрипт fuelup-init. 
 Это установит forc, forc-client, forc-fmt, forc-lsp, forc-wallet, а также fuel-core в ~/.fuelup/bin.
 
-<curl https://install.fuel.network | sh>
+«curl https://install.fuel.network | sh»
 
 Проверить версии необходимых инструментов вы можете с помощью приведенных ниже команд:
 
-<fuelup self update>
-<fuelup update>
-<fuelup default latest>
+«fuelup self update»
+«fuelup update»
+«fuelup default latest»
   
 Создание проекта
 ========================
