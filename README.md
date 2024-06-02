@@ -89,7 +89,7 @@ impl Counter for Contract {
 
     cargo generate --init fuellabs/sway templates/sway-test-rs --name counter-contract
 
->Откройте файл Cargo.toml и проверьте версию топлива, используемого в зависимости от разработки. Измените версию на 0.62.0, если это еще не так.
+>Откройте файл Cargo.toml и проверьте версию fuels, используемого в зависимости от разработки. Измените версию на 0.62.0, если это еще не так.
 
 Вот так должен выглядеть ваш файл ./counter-contract/tests/harness.rs
 
@@ -175,7 +175,7 @@ async fn test_increment() {
 
     forc wallet import
 
-Если неи, то создайте новый кошелек (не забудьте записать пароль и мнемоническую фразу от кошелька):
+Если нет, то создайте новый кошелек (не забудьте записать пароль и мнемоническую фразу от кошелька):
 
     forc wallet new
 
@@ -442,7 +442,7 @@ To create a production build, use npm run build.
 
 ## Вы только что создали полнофункциональное децентрализованное приложение на Fuel! ⛽
 
-
+>При необходимости воспользуйтесь официальной инструкцией https://docs.fuel.network/guides/counter-dapp/building-a-smart-contract/
 
 
 
