@@ -206,8 +206,249 @@ Deployed in block 0x4ea52b6652836c499e44b7e42f7c22d1ed1f03cf90a1d94cd0113b9023df
 ```
 
 ## Поздравляем, вы завершили свой первый смарт-контракт на Fuel ⛽
+========================
 
-Далее вас ожидает создание интерфейса для взаимодействия с вашим контрактом!
 
+### Cоздание интерфейса для взаимодействия с вашим контрактом!
+
+Для начала установим fuel wallet
+https://chromewebstore.google.com/detail/fuel-wallet/dldjpboieedgcmpkchcjcbijingjcgok
+
+После настройки кошелька нажмите кнопку «Кран» в кошельке, чтобы получить токены тестовой сети.
+
+Вернемся на директорию выше и инициализируем проект React с помощью TypeScript:
+
+
+    cd ..
+    npx create-react-app frontend --template typescript
+
+Полученный вывод будет таким:
+
+    Success! Created frontend at Fuel/fuel-project/frontend
+
+Установим необходимые зависимости:
+
+    cd frontend
+    npm install fuels @fuels/react @fuels/connectors @tanstack/react-query
+
+Создадим файл конфигурации:
+
+    npx fuels init --contracts ../counter-contract/ --output ./src/sway-api
+    npx fuels build
+
+Внутри папки fuel-project/frontend/src добавим код, который взаимодействует с нашим контрактом.
+Изменим код fuel-project/frontend/src/index.tsx, он будет таким:
+
+```ruby
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import { FuelProvider } from '@fuels/react';
+import {
+  defaultConnectors,
+} from '@fuels/connectors';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+root.render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <FuelProvider
+        fuelConfig={{
+          connectors: defaultConnectors(),
+        }}
+      >
+        <App />
+      </FuelProvider>
+    </QueryClientProvider>
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+
+Затем изменим файл fuel-project/frontend/src/App.tsx, предвариельно указав свой CONTRACT_ID в "0x...":
+
+```ruby
+import { useEffect, useState } from "react";
+import {
+  useBalance,
+  useConnectUI,
+  useIsConnected,
+  useWallet
+} from '@fuels/react';
+import { CounterContractAbi__factory  } from "./sway-api"
+import type { CounterContractAbi } from "./sway-api";
+
+// REPLACE WITH YOUR CONTRACT ID
+const CONTRACT_ID = 
+  "0x...";
+
+export default function Home() {
+  const [contract, setContract] = useState<CounterContractAbi>();
+  const [counter, setCounter] = useState<number>();
+  const { connect, isConnecting } = useConnectUI();
+  const { isConnected } = useIsConnected();
+  const { wallet } = useWallet();
+  const { balance } = useBalance({
+    address: wallet?.address.toAddress(),
+    assetId: wallet?.provider.getBaseAssetId(),
+  });
+
+  useEffect(() => {
+    async function getInitialCount(){
+      if(isConnected && wallet){
+        const counterContract = CounterContractAbi__factory.connect(CONTRACT_ID, wallet);
+        await getCount(counterContract);
+        setContract(counterContract);
+      }
+    }
+    
+    getInitialCount();
+  }, [isConnected, wallet]);
+
+  const getCount = async (counterContract: CounterContractAbi) => {
+    try{
+      const { value } = await counterContract.functions
+      .count()
+      .get();
+      setCounter(value.toNumber());
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
+  const onIncrementPressed = async () => {
+    if (!contract) {
+      return alert("Contract not loaded");
+    }
+    try {
+      await contract.functions
+      .increment()
+      .call();
+      await getCount(contract);
+    } catch(error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div style={styles.root}>
+      <div style={styles.container}>
+        {isConnected ? (
+          <>
+            <h3 style={styles.label}>Counter</h3>
+            <div style={styles.counter}>
+              {counter ?? 0}
+            </div>
+
+            {balance && balance.toNumber() === 0 ? (
+              <p>Get testnet funds from the <a target="_blank" rel="noopener noreferrer"  href={`https://faucet-testnet.fuel.network/?address=${wallet?.address.toAddress()}`}>Fuel Faucet</a> to increment the counter.</p>
+          ) : 
+          (
+            <button
+            onClick={onIncrementPressed}
+            style={styles.button}
+            >
+              Increment Counter
+            </button>
+          )
+          }
+            
+          <p>Your Fuel Wallet address is:</p>
+          <p>{wallet?.address.toAddress()}</p>
+          </>
+        ) : (
+          <button
+          onClick={() => {
+            connect();
+          }}
+          style={styles.button}
+          >
+            {isConnecting ? 'Connecting' : 'Connect'}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const styles = {
+  root: {
+    display: 'grid',
+    placeItems: 'center',
+    height: '100vh',
+    width: '100vw',
+    backgroundColor: "black",
+  } as React.CSSProperties,
+  container: {
+    color: "#ffffffec",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  } as React.CSSProperties,
+  label: {
+    fontSize: "28px",
+  },
+  counter: {
+    color: "#a0a0a0",
+    fontSize: "48px",
+  },
+  button: {
+    borderRadius: "8px",
+    margin: "24px 0px",
+    backgroundColor: "#707070",
+    fontSize: "16px",
+    color: "#ffffffec",
+    border: "none",
+    outline: "none",
+    height: "60px",
+    padding: "0 1rem",
+    cursor: "pointer"
+  },
+}
+```
+
+### Запускаем проект
+========================
+
+Внутри каталога fuel-project/frontend запускаем:
+
+    npm start
+
+Получаем результат:
+
+```ruby
+Compiled successfully!
+
+You can now view frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.4.48:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+```
+В браузере подключаем свой кошелек Fuel и если у вас есть тестовая сеть ETH на Fuel, вы должны увидеть значение счетчика и кнопку увеличения.
+
+## Вы только что создали полнофункциональное децентрализованное приложение на Fuel! ⛽
+
+
+
+
+
+    
+    
+    
+    
 
     
