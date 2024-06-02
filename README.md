@@ -40,31 +40,23 @@
 Откроем свой проект в редакторе кода ./counter-contract/src/main.sw, удалим все в src/main.sw и создадим новый код:
 
     contract;
- 
     storage {
-    counter: u64 = 0,
-}
- 
+    counter: u64 = 0,}
     abi Counter {
     #[storage(read, write)]
     fn increment();
- 
     #[storage(read)]
-    fn count() -> u64;
-}
- 
+    fn count() -> u64;}
     impl Counter for Contract {
     #[storage(read)]
     fn count() -> u64 {
         storage.counter.read()
     }
- 
     #[storage(read, write)]
     fn increment() {
         let incremented = storage.counter.read() + 1;
         storage.counter.write(incremented);
-    }
-}
+    }}
 
 Перейдем в папку нашего контракта и выполним команду, чтобы создать контракт:
 
@@ -91,12 +83,10 @@
 Вот так должен выглядеть ваш файл ./counter-contract/tests/harness.rs
 
     use fuels::{prelude::*, types::ContractId};
- 
     // Load abi from json
     abigen!(Contract(
     name = "MyContract",
-    abi = "out/debug/counter-contract-abi.json"
-));
+    abi = "out/debug/counter-contract-abi.json"));
  
     async fn get_contract_instance() -> (MyContract<WalletUnlocked>, ContractId) {
     // Launch a local network and deploy the contract
@@ -124,15 +114,13 @@
  
     let instance = MyContract::new(id.clone(), wallet);
  
-    (instance, id.into())
-}
+    (instance, id.into())}
  
     #[tokio::test]
     async fn can_get_contract_id() {
     let (_instance, _id) = get_contract_instance().await;
  
-    // Now you have an instance of your contract you can use to test each function
-}
+    // Now you have an instance of your contract you can use to test each function}
  
     #[tokio::test]
     async fn test_increment() {
@@ -146,8 +134,7 @@
  
     // Check that the current value of the counter is 1.
     // Recall that the initial value of the counter was 0.
-    assert_eq!(result.value, 1);
-}
+    assert_eq!(result.value, 1);}
 
 Запускаем cargo test в терминале:
 
