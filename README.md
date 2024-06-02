@@ -30,19 +30,21 @@
 Мы создадим простой контракт счетчика с двумя функциями: одна для увеличения счетчика и одна для возврата значения счетчика.
 Для начала создадим новую пустую папку под названием fuel-project:
 
-<mkdir fuel-project>
+    mkdir fuel-project
 
 Переместимся в папку проекта и создадим проект контракта, используя forc:
 
-<cd fuel-project>
-<forc new counter-contract>
+    cd fuel-project
+    forc new counter-contract
 
 Откроем свой проект в редакторе кода ./counter-contract/src/main.sw, удалим все в src/main.sw и создадим новый код:
 
-<contract;
+    contract;
+ 
 storage {
     counter: u64 = 0,
-} 
+}
+ 
 abi Counter {
     #[storage(read, write)]
     fn increment();
@@ -50,6 +52,7 @@ abi Counter {
     #[storage(read)]
     fn count() -> u64;
 }
+ 
 impl Counter for Contract {
     #[storage(read)]
     fn count() -> u64 {
@@ -61,38 +64,40 @@ impl Counter for Contract {
         let incremented = storage.counter.read() + 1;
         storage.counter.write(incremented);
     }
-}>
+}
 
 Перейдем в папку нашего контракта и выполним команду, чтобы создать контракт:
 
-<cd counter-contract>
-<forc build>
+    cd counter-contract
+    forc build
 
-Тестирование контракта с помощью Rust
+#### Тестирование контракта с помощью Rust
 ========================
 
 Если у вас еще не установлен Rust, вы можете установить его, выполнив следующую команду:
 
-<curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh>
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 Далее установим cargo generate:
 
-<cargo install cargo-generate --locked>
+    cargo install cargo-generate --locked
 
 Теперь cгенерируем тестовую программу по умолчанию с помощью следующей команды:
 
-<cargo generate --init fuellabs/sway templates/sway-test-rs --name counter-contract>
+    cargo generate --init fuellabs/sway templates/sway-test-rs --name counter-contract
 
 >Откройте файл Cargo.toml и проверьте версию топлива, используемого в зависимости от разработки. Измените версию на 0.62.0, если это еще не так.
 
 Вот так должен выглядеть ваш файл ./counter-contract/tests/harness.rs
 
-<use fuels::{prelude::*, types::ContractId};
+    use fuels::{prelude::*, types::ContractId};
+ 
 // Load abi from json
 abigen!(Contract(
     name = "MyContract",
     abi = "out/debug/counter-contract-abi.json"
 ));
+ 
 async fn get_contract_instance() -> (MyContract<WalletUnlocked>, ContractId) {
     // Launch a local network and deploy the contract
     let mut wallets = launch_custom_provider_and_get_wallets(
@@ -121,12 +126,14 @@ async fn get_contract_instance() -> (MyContract<WalletUnlocked>, ContractId) {
  
     (instance, id.into())
 }
+ 
 #[tokio::test]
 async fn can_get_contract_id() {
     let (_instance, _id) = get_contract_instance().await;
  
     // Now you have an instance of your contract you can use to test each function
 }
+ 
 #[tokio::test]
 async fn test_increment() {
     let (instance, _id) = get_contract_instance().await;
@@ -140,10 +147,10 @@ async fn test_increment() {
     // Check that the current value of the counter is 1.
     // Recall that the initial value of the counter was 0.
     assert_eq!(result.value, 1);
-}>
+}
 
 Запускаем cargo test в терминале:
 
-<cargo test>
+    cargo test
 
 
