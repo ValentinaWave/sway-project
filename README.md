@@ -41,11 +41,11 @@
 
     contract;
  
-storage {
+    storage {
     counter: u64 = 0,
 }
  
-abi Counter {
+    abi Counter {
     #[storage(read, write)]
     fn increment();
  
@@ -53,7 +53,7 @@ abi Counter {
     fn count() -> u64;
 }
  
-impl Counter for Contract {
+    impl Counter for Contract {
     #[storage(read)]
     fn count() -> u64 {
         storage.counter.read()
@@ -92,13 +92,13 @@ impl Counter for Contract {
 
     use fuels::{prelude::*, types::ContractId};
  
-// Load abi from json
-abigen!(Contract(
+    // Load abi from json
+    abigen!(Contract(
     name = "MyContract",
     abi = "out/debug/counter-contract-abi.json"
 ));
  
-async fn get_contract_instance() -> (MyContract<WalletUnlocked>, ContractId) {
+    async fn get_contract_instance() -> (MyContract<WalletUnlocked>, ContractId) {
     // Launch a local network and deploy the contract
     let mut wallets = launch_custom_provider_and_get_wallets(
         WalletsConfig::new(
@@ -127,15 +127,15 @@ async fn get_contract_instance() -> (MyContract<WalletUnlocked>, ContractId) {
     (instance, id.into())
 }
  
-#[tokio::test]
-async fn can_get_contract_id() {
+    #[tokio::test]
+    async fn can_get_contract_id() {
     let (_instance, _id) = get_contract_instance().await;
  
     // Now you have an instance of your contract you can use to test each function
 }
  
-#[tokio::test]
-async fn test_increment() {
+    #[tokio::test]
+    async fn test_increment() {
     let (instance, _id) = get_contract_instance().await;
  
     // Increment the counter
