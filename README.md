@@ -187,7 +187,7 @@ async fn test_increment() {
 
     forc wallet accounts
 
-Вы можете получить тестовые средства с помощью [крана][https://faucet-testnet.fuel.network/]
+Вы можете получить тестовые средства с помощью крана https://faucet-testnet.fuel.network/
 
 Теперь вы можете развернуть контракт в последней тестовой сети с помощью команды:
 
@@ -197,15 +197,17 @@ async fn test_increment() {
 Готово! 
 >Сохраните идентификатор контракта, так как он понадобится вам позже для подключения внешнего интерфейса.
 
+```ruby
 Contract counter-contract Deployed!
 
-```ruby
 Network: https://testnet.fuel.network
 Contract ID: 0x8342d413de2a678245d9ee39f020795800c7e6a4ac5ff7daae275f533dc05e08
 Deployed in block 0x4ea52b6652836c499e44b7e42f7c22d1ed1f03cf90a1d94cd0113b9023dfa636
 ```
 
-    
+## Поздравляем, вы завершили свой первый смарт-контракт на Fuel ⛽
+
+Далее вас ожидает создание интерфейса для взаимодействия с вашим контрактом!
 
 
     
