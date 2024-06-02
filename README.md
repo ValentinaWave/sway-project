@@ -93,7 +93,7 @@ impl Counter for Contract {
 
 Вот так должен выглядеть ваш файл ./counter-contract/tests/harness.rs
 
-    ```
+```ruby
 use fuels::{prelude::*, types::ContractId};
  
 // Load abi from json
@@ -153,6 +153,7 @@ async fn test_increment() {
     assert_eq!(result.value, 1);
 }
 ```
+
 
 Запускаем cargo test в терминале:
 
